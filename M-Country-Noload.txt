@@ -1,0 +1,8 @@
+let
+    Source = Csv.Document(File.Contents("C:\Users\phakk\Desktop\9EXPERT-Case Study Power BI Desktop-Version 30\Datasources\Countries.csv"),[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"CountryID", Int64.Type}, {"CountryName", type text}, {"CountryName_Local", type text}, {"CountryFlagURL", type text}}),
+    #"Merged Queries" = Table.NestedJoin(#"Change Type", {"CountryName"}, Continent, {"Country"}, "Continent", JoinKind.LeftOuter),
+    #"Expanded Continent" = Table.ExpandTableColumn(#"Merged Queries", "Continent", {"Continent"}, {"Continent"})
+in
+    #"Expanded Continent"
