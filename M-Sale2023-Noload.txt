@@ -1,0 +1,6 @@
+let
+    Source = Excel.Workbook(File.Contents("C:\Users\phakk\Desktop\9EXPERT-Case Study Power BI Desktop-Version 30\Datasources\SalesData2023.xlsx"), null, true),
+    Sales2023_Sheet = Source{[Item="Sales2023",Kind="Sheet"]}[Data],
+    #"Promoted Headers" = Table.PromoteHeaders(Sales2023_Sheet, [PromoteAllScalars=true])
+in
+    #"Promoted Headers"
