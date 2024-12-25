@@ -1,0 +1,18 @@
+let
+    Source = Excel.Workbook(File.Contents("C:\Users\phakk\Desktop\9EXPERT-Case Study Power BI Desktop-Version 30\Datasources\SalesData.xlsx"), null, true),
+    Sales2021_2022_Sheet = Source{[Item="Sales2021_2022",Kind="Sheet"]}[Data],
+    #"Promoted Headers" = Table.PromoteHeaders(Sales2021_2022_Sheet, [PromoteAllScalars=true]),
+    #"Appended Query" = Table.Combine({#"Promoted Headers", Sales2023}),
+    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Appended Query", {{"InvoiceDate", type date}, {"Registration_Date", type date}}, "en-GB"),
+    #"Changed Type" = Table.TransformColumnTypes(#"Changed Type with Locale",{{"TotalDiscount", type number}, {"DeliveryCharge", type number}, {"SalePrice", type number}, {"Make", type text}, {"Marque", type text}, {"CostPrice", type number}, {"ColourID", Int64.Type}, {"ClientID", Int64.Type}, {"LabourCost", type number}, {"SpareParts", Int64.Type}, {"MileageRange", type text}, {"MileageRangeSort", Int64.Type}, {"VehicleType", type text}, {"InvoiceNumber", Int64.Type}}),
+    #"Merged Queries" = Table.NestedJoin(#"Changed Type", {"Make", "Marque"}, Vehicle, {"Make", "Marque"}, "Vehicle", JoinKind.LeftOuter),
+    #"Expanded Vehicle" = Table.ExpandTableColumn(#"Merged Queries", "Vehicle", {"VehicleKey"}, {"VehicleKey"}),
+    #"Removed Columns" = Table.RemoveColumns(#"Expanded Vehicle",{"Make", "Marque", "MileageRange","VehicleType"}),
+    #"Added Custom" = Table.AddColumn(#"Removed Columns", "NetSales", each [SalePrice] - ( [TotalDiscount] + [DeliveryCharge] )),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "GrossMargin", each [NetSales] - [CostPrice]),
+    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "DirectCost", each [LabourCost] + [SpareParts]),
+    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "NetMargin", each [GrossMargin] - ( [LabourCost] + [SpareParts] )),
+    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "SalesCosts", each [TotalDiscount] + [DeliveryCharge]),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom4",{{"NetSales", type number}, {"GrossMargin", type number}, {"DirectCost", type number}, {"NetMargin", type number}, {"SalesCosts", type number}})
+in
+    #"Changed Type1"
