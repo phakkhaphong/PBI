@@ -1,0 +1,24 @@
+VehicleAgeGroupKey = 
+VAR VehicleAge = DATEDIFF([Registration_Date], [InvoiceDate], YEAR)
+RETURN
+    IF(VehicleAge <= 5, 1,
+    IF(VehicleAge <=10, 2,
+    IF(VehicleAge <=15, 3,
+    IF(VehicleAge <=20, 4,
+    IF(VehicleAge <=25, 5,
+    IF(VehicleAge <=30, 5, 7))))))
+
+
+VehicleAgeGroup = SELECTCOLUMNS(
+    {
+        (1,"Under 5"),
+        (2,"6-10"),
+        (3,"11-15"),
+        (4,"16-20"),
+        (5,"21-25"),
+        (6,"26-30"),
+        (7,"Over 30")
+    },
+    "VehicleAgeGroupKey", [Value1],
+    "VehicleAgeGroupName", [Value2]
+)
