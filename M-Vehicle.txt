@@ -5,7 +5,7 @@ let
     #"Appended Query" = Table.Combine({#"Promoted Headers", Sales2023}),
     #"Changed Type with Locale" = Table.TransformColumnTypes(#"Appended Query", {{"InvoiceDate", type date}, {"Registration_Date", type date}}, "en-GB"),
     #"Changed Type" = Table.TransformColumnTypes(#"Changed Type with Locale",{{"TotalDiscount", type number}, {"DeliveryCharge", type number}, {"SalePrice", type number}, {"Make", type text}, {"Marque", type text}, {"CostPrice", type number}, {"ColourID", Int64.Type}, {"ClientID", Int64.Type}, {"LabourCost", type number}, {"SpareParts", Int64.Type}, {"MileageRange", type text}, {"MileageRangeSort", Int64.Type}, {"VehicleType", type text}, {"InvoiceNumber", Int64.Type}}),
-    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"Make", "Marque", "VehicleType"}),
+    #"Removed Other Columns" = Table.SelectColumns(#"Changed Type",{"Make", "Marque"}),
     #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns"),
     #"Added Index" = Table.AddIndexColumn(#"Removed Duplicates", "Index", 1, 1, Int64.Type),
     #"Reordered Columns" = Table.ReorderColumns(#"Added Index",{"Index", "Make", "Marque"}),
