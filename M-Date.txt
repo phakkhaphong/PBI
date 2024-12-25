@@ -1,0 +1,6 @@
+let
+    Source = Excel.Workbook(File.Contents("C:\Users\phakk\Desktop\9EXPERT-Case Study Power BI Desktop-Version 30\Datasources\DateTable.xlsx"), null, true),
+    DimDate_Table = Source{[Item="DimDate",Kind="Table"]}[Data],
+    #"Changed Type" = Table.TransformColumnTypes(DimDate_Table,{{"DateKey", type date}, {"Year", Int64.Type}, {"MonthNum", Int64.Type}, {"MonthFull", type text}, {"MonthAbbr", type text}, {"QuarterNum", Int64.Type}, {"QuarterFull", type text}, {"QuarterNameAbbr", type text}, {"YearAndQuarterNum", Int64.Type}, {"YearAndMonthNum", Int64.Type}, {"QuarterAndYearAbbr", type text}, {"MonthAndYearAbbr", type text}, {"MonthAndYear", type text}, {"QuarterAndYear", type text}})
+in
+    #"Changed Type"
